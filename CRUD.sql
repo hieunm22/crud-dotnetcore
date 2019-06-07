@@ -1,7 +1,9 @@
 ﻿use Kloon
 go
+IF OBJECT_ID('dbo.Billionaire', 'U') IS NOT NULL
 drop table Billionaire
 go
+IF OBJECT_ID('dbo.Nation', 'U') IS NOT NULL
 drop table Nation
 go
 
@@ -257,7 +259,9 @@ insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Ph�
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values ('Jack Ma', 1964, 'Alibaba', 43, 36)
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values ('Sergery Brinn', 1973, 'Alphabet', 170, 48)
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values ('Larry Page', 1973, 'Alphabet', 215, 49)
-insert into Billionaire(Name, BornYear, Company, NationID, Asset) values ('Timothy Donald Cook', 1960, 'Apple', 215, 1)
+insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Donald John Trump', 1946, '', 215, 18)
+insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Nguyễn Thị Phương Thảo', 1970, 'VietJet Air', 220, 1)
+insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Elon Reeve Musk', 1971, 'Tesla Motors', 220, 18)
 go
 --select * from Nation
 go
