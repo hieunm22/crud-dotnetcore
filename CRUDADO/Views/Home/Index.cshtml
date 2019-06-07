@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Billionaire>
+
+@{
+    Layout = "_Layout";
+    var title = "READ Billionaire";
+    ViewData["Title"] = title;
+}
+
+<h2>@title</h2>
+
+<h3><a asp-action="Create" class="btn btn-sm btn-secondary">Create</a></h3>
+<table class="table table-bordered table-sm table-striped">
+    <thead>
+        <tr>
+					<th>Name</th>
+					<th>BornYear</th>
+					<th>Company</th>
+					<th>Nation</th>
+					<th>Asset</th>
+					<th>Edit</th>
+					<th>
+                        <form onsubmit="return confirm('Do you really want to remove all billionaires?')" asp-action="DeleteAll" method="post">
+                            <button>Remove all</button>
+                        </form>
+                    </th>
+				</tr>
+    </thead>
+    <tbody>
+        @if (Model == null)
+        {
+            <tr><td colspan="7" class="text-center">No Model Data</td></tr>
+        }
+        else
+        {
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.BornYear</td>
+                    <td>@p.Company</td>
+                    <td>@p.Nations.FirstOrDefault(f => f.Value == p.NationID.ToString()).Text</td>
+                    <td>@string.Format(new System.Globalization.CultureInfo("en-US"), p.Asset > 1 ? "{0:C0} billions" : "{0:C0} billion", p.Asset)</td>
+                    <td><a asp-action="Update" asp-route-id="@p.ID">Edit</a></td>
+                    <td>
+                        <form onsubmit="return confirm('Do you really want to remove this billionaire?')" asp-action="Delete" method="post" asp-route-id="@p.ID">
+                            <button>Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
