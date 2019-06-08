@@ -1,4 +1,4 @@
-﻿use Kloon
+﻿use FPTIS
 go
 IF OBJECT_ID('dbo.Billionaire', 'U') IS NOT NULL
 drop table Billionaire
@@ -6,7 +6,32 @@ go
 IF OBJECT_ID('dbo.Nation', 'U') IS NOT NULL
 drop table Nation
 go
-
+IF EXISTS (SELECT * FROM sys.objects
+            WHERE object_id = OBJECT_ID(N'dbo.getall')
+                    --AND type IN ( N'P', N'PC',N'X',N'RF')
+		) 
+	drop procedure getall
+go
+IF EXISTS (SELECT * FROM sys.objects
+            WHERE object_id = OBJECT_ID(N'dbo.removebyid')
+		) 
+	drop procedure getbyid
+go
+IF EXISTS (SELECT * FROM sys.objects
+            WHERE object_id = OBJECT_ID(N'dbo.removebyid')
+		) 
+	drop procedure removebyid
+go
+IF EXISTS (SELECT * FROM sys.objects
+            WHERE object_id = OBJECT_ID(N'dbo.removeall')
+		) 
+	drop procedure removeall
+go
+IF EXISTS (SELECT * FROM sys.objects
+            WHERE object_id = OBJECT_ID(N'dbo.updatebyid')
+		) 
+	drop procedure updatebyid
+go
 create table Nation
 (
 	ID bigint primary key identity(1,1),
@@ -23,6 +48,44 @@ create table Billionaire
 	NationID bigint references Nation(id),
 	Asset decimal
 )
+go
+create procedure getall
+as
+begin
+	select * from Billionaire
+end
+go
+create procedure getbyid
+@id bigint
+as
+begin
+	select * from Billionaire where id=@id
+end
+go
+create procedure removebyid
+@id bigint
+as
+begin
+	delete from Billionaire where id=@id
+end
+go
+create procedure removeall
+as
+begin
+	delete from Billionaire
+end
+go
+create procedure updatebyid
+@Name nvarchar(200),
+@BornYear int,
+@Company nvarchar(200),
+@NationID bigint,
+@Asset int,
+@ID bigint
+as
+begin
+	Update Billionaire SET Name=@Name, BornYear=@BornYear, Company=@Company, NationID=@NationID, Asset=@Asset Where Id=@ID
+end
 go
 insert into Nation(Name, Area) values ('Afghanistan ', 647500)
 insert into Nation(Name, Area) values ('Albania ', 28748)
@@ -262,6 +325,7 @@ insert into Billionaire(Name, BornYear, Company, NationID, Asset) values ('Larry
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Donald John Trump', 1946, '', 215, 18)
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Nguyễn Thị Phương Thảo', 1970, 'VietJet Air', 220, 1)
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Elon Reeve Musk', 1971, 'Tesla Motors', 220, 18)
+insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Steve Blamer', 1956, 'Microsoft', 220, 49)
 go
 --select * from Nation
 go

@@ -8,7 +8,7 @@
 
 <h2>@title</h2>
 
-<h3><a asp-action="Create" class="btn btn-sm btn-secondary">Create</a></h3>
+<h3><a asp-action="Create" class="btn btn-md btn-primary">Create new billionaire</a></h3>
 <table class="table table-bordered table-sm table-striped">
     <thead>
         <tr>
@@ -16,7 +16,7 @@
 					<th>BornYear</th>
 					<th>Company</th>
 					<th>Nation</th>
-					<th>Asset</th>
+					<th>Asset (billions dollars)</th>
 					<th>Edit</th>
 					<th>
                         <form onsubmit="return confirm('Do you really want to remove all billionaires?')" asp-action="DeleteAll" method="post">
@@ -26,7 +26,7 @@
 				</tr>
     </thead>
     <tbody>
-        @if (Model == null)
+        @if (Model == null || Model.Count() == 0)
         {
             <tr><td colspan="7" class="text-center">No Model Data</td></tr>
         }
@@ -39,7 +39,7 @@
                     <td>@p.BornYear</td>
                     <td>@p.Company</td>
                     <td>@p.Nations.FirstOrDefault(f => f.Value == p.NationID.ToString()).Text</td>
-                    <td>@string.Format(new System.Globalization.CultureInfo("en-US"), p.Asset > 1 ? "{0:C0} billions" : "{0:C0} billion", p.Asset)</td>
+                    <td>@string.Format(new System.Globalization.CultureInfo("en-US"), "{0:N0}", p.Asset)</td>
                     <td><a asp-action="Update" asp-route-id="@p.ID">Edit</a></td>
                     <td>
                         <form onsubmit="return confirm('Do you really want to remove this billionaire?')" asp-action="Delete" method="post" asp-route-id="@p.ID">

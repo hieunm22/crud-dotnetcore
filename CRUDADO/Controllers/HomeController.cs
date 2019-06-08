@@ -70,8 +70,9 @@ namespace CRUDADO.Controllers
 				//SqlDataReader
 				connection.Open();
 
-				string sql = "select * from Billionaire";
+				string sql = "getall";
 				SqlCommand command = new SqlCommand(sql, connection);
+				command.CommandType = CommandType.StoredProcedure;
 
 				using (SqlDataReader dataReader = command.ExecuteReader())
 				{
@@ -108,18 +109,23 @@ namespace CRUDADO.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Create(Billionaire Billionaire)
+		public IActionResult Create(Billionaire billionaire)
 		{
 			if (ModelState.IsValid)
 			{
 				string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 				using (SqlConnection connection = new SqlConnection(connectionString))
 				{
-					string sql = $"insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'{Billionaire.Name}', '{Billionaire.BornYear}', N'{Billionaire.Company}', {Billionaire.NationID}, '{Billionaire.Asset}')";
+					string sql = $"insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (@Name, @BornYear, @Company, @NationID, @Asset)";
 
 					using (SqlCommand command = new SqlCommand(sql, connection))
 					{
-						command.CommandType = CommandType.Text;
+						command.CommandType = CommandType.StoredProcedure;
+						command.Parameters.Add("Name", SqlDbType.NVarChar).Value = billionaire.Name;
+						command.Parameters.Add("BornYear", SqlDbType.Int).Value = billionaire.BornYear;
+						command.Parameters.Add("Company", SqlDbType.NVarChar).Value = billionaire.Company;
+						command.Parameters.Add("NationID", SqlDbType.BigInt).Value = billionaire.NationID;
+						command.Parameters.Add("Asset", SqlDbType.Int).Value = billionaire.Asset;
 
 						connection.Open();
 						command.ExecuteNonQuery();
@@ -139,8 +145,10 @@ namespace CRUDADO.Controllers
 			Billionaire billionaire = new Billionaire();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"Select * From Billionaire Where Id='{id}'";
+				string sql = $"getbyid";
 				SqlCommand command = new SqlCommand(sql, connection);
+				command.CommandType = CommandType.StoredProcedure;
+				command.Parameters.Add("id", SqlDbType.NVarChar).Value = id;
 
 				connection.Open();
 
@@ -165,15 +173,22 @@ namespace CRUDADO.Controllers
 
 		[HttpPost]
 		[ActionName("Update")]
-		public IActionResult Update_Post(Billionaire Billionaire)
+		public IActionResult Update_Post(Billionaire billionaire)
 		{
 			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"Update Billionaire SET Name=N'{Billionaire.Name}', BornYear='{Billionaire.BornYear}', Company=N'{Billionaire.Company}', NationID=N'{Billionaire.NationID}', Asset='{Billionaire.Asset}' Where Id='{Billionaire.ID}'";
+				string sql = $"updatebyid";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					connection.Open();
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.Add("Name", SqlDbType.NVarChar).Value = billionaire.Name;
+					command.Parameters.Add("BornYear", SqlDbType.Int).Value = billionaire.BornYear;
+					command.Parameters.Add("Company", SqlDbType.NVarChar).Value = billionaire.Company;
+					command.Parameters.Add("NationID", SqlDbType.BigInt).Value = billionaire.NationID;
+					command.Parameters.Add("Asset", SqlDbType.Int).Value = billionaire.Asset;
+					command.Parameters.Add("ID", SqlDbType.Int).Value = billionaire.ID;
 					command.ExecuteNonQuery();
 					connection.Close();
 				}
@@ -188,9 +203,11 @@ namespace CRUDADO.Controllers
 			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"Delete From Billionaire Where Id='{id}'";
+				string sql = $"removebyid";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.Add("id", SqlDbType.BigInt).Value = id;
 					connection.Open();
 					try
 					{
