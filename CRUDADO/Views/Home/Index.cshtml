@@ -12,18 +12,18 @@
 <table class="table table-bordered table-sm table-striped">
     <thead>
         <tr>
-					<th>Name</th>
-					<th>BornYear</th>
-					<th>Company</th>
-					<th>Nation</th>
-					<th>Asset (billions dollars)</th>
-					<th>Edit</th>
-					<th>
-                        <form onsubmit="return confirm('Do you really want to remove all billionaires?')" asp-action="DeleteAll" method="post">
-                            <button>Remove all</button>
-                        </form>
-                    </th>
-				</tr>
+            <th>Name</th>
+            <th>Born Year</th>
+            <th>Company</th>
+            <th>Nation</th>
+            <th>Asset (billions dollars)</th>
+            <th>Edit</th>
+            <th>
+                <form onsubmit="return confirm('Do you really want to remove all billionaires?')" asp-action="DeleteAll" method="post">
+                    <button>Remove all</button>
+                </form>
+            </th>
+        </tr>
     </thead>
     <tbody>
         @if (Model == null || Model.Count() == 0)
@@ -32,7 +32,7 @@
         }
         else
         {
-            @foreach (var p in Model)
+            @foreach (var p in Model.Take(10))
             {
                 <tr>
                     <td>@p.Name</td>
@@ -51,3 +51,5 @@
         }
     </tbody>
 </table>
+
+@Html.Partial("Paging")

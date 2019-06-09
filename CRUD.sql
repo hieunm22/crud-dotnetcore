@@ -13,6 +13,11 @@ IF EXISTS (SELECT * FROM sys.objects
 	drop procedure getall
 go
 IF EXISTS (SELECT * FROM sys.objects
+            WHERE object_id = OBJECT_ID(N'dbo.paging')
+		) 
+	drop procedure paging
+go
+IF EXISTS (SELECT * FROM sys.objects
             WHERE object_id = OBJECT_ID(N'dbo.removebyid')
 		) 
 	drop procedure getbyid
@@ -31,6 +36,11 @@ IF EXISTS (SELECT * FROM sys.objects
             WHERE object_id = OBJECT_ID(N'dbo.updatebyid')
 		) 
 	drop procedure updatebyid
+go
+IF EXISTS (SELECT * FROM sys.objects
+            WHERE object_id = OBJECT_ID(N'dbo.insertnew')
+		) 
+	drop procedure insertnew
 go
 create table Nation
 (
@@ -53,6 +63,19 @@ create procedure getall
 as
 begin
 	select * from Billionaire
+end
+go
+create procedure paging
+@pagenumber int,
+@pagesize int
+as
+begin
+	select top (@pagesize) * from
+	(
+		select * from Billionaire
+		order by ID
+		OFFSET @pagesize * (@pagenumber - 1) ROWS
+	) paging
 end
 go
 create procedure getbyid
@@ -85,6 +108,17 @@ create procedure updatebyid
 as
 begin
 	Update Billionaire SET Name=@Name, BornYear=@BornYear, Company=@Company, NationID=@NationID, Asset=@Asset Where Id=@ID
+end
+go
+create procedure insertnew
+@Name nvarchar(200),
+@BornYear int,
+@Company nvarchar(200),
+@NationID bigint,
+@Asset int
+as
+begin
+	insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (@Name, @BornYear, @Company, @NationID, @Asset)
 end
 go
 insert into Nation(Name, Area) values ('Afghanistan ', 647500)
@@ -324,8 +358,9 @@ insert into Billionaire(Name, BornYear, Company, NationID, Asset) values ('Serge
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values ('Larry Page', 1973, 'Alphabet', 215, 49)
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Donald John Trump', 1946, '', 215, 18)
 insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Nguyễn Thị Phương Thảo', 1970, 'VietJet Air', 220, 1)
-insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Elon Reeve Musk', 1971, 'Tesla Motors', 220, 18)
-insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Steve Blamer', 1956, 'Microsoft', 220, 49)
+insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Elon Reeve Musk', 1971, 'Tesla Motors', 215, 18)
+insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Steve Blamer', 1956, 'Microsoft', 215, 49)
+insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (N'Roman Abramovich', 1966, 'Chelsea', 170, 13)
 go
 --select * from Nation
 go

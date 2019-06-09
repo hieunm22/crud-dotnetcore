@@ -1,24 +1,41 @@
-// const deleteSelected = () => {
-// 	const _confirm = confirm('Do you really want to remove selected teacher(s)?')
-// 	if (_confirm) {
-// 		const checkboxes = document.querySelectorAll('.squall-20-checkbox').toArray()
-// 		let parameters = ''
-// 		checkboxes.forEach((e, i) => {
-// 			if (e.checked) {
-// 				const id = e.id.substr('teacher-'.length)
-// 				parameters += id + ','
-// 			}
-// 		})
-// 		parameters = parameters.substr(parameters.length - 1)
-// 	}
+let currentPage = 1
 
-// 	return _confirm
-// }
-
-// const isChecked = ckb => ckb.checked
-
-// NodeList.prototype.toArray = function() {
-// 	let array = []
-// 	this.forEach(e => array.push(e))
-// 	return array
-// }
+const paging = p => {
+  const pageElement = document.getElementById('currentPage')
+  switch (p.id) {
+    case "firstPage":
+      currentPage = 1
+      break;
+    case "prevPage":
+      if (currentPage > +pageElement.min) currentPage--
+      break;
+    case "nextPage":
+      if (currentPage < +pageElement.max) currentPage++
+      break;
+    case "lastPage":
+      currentPage = +pageElement.max
+      break;
+    case "currentPage":
+      currentPage = +pageElement.value
+      break;
+  }
+  pageElement.value = currentPage
+  $.ajax({
+    url: "/Home/Paging",
+    data: { page: pageElement.valueAsNumber },
+    type: "post",
+    dataType: "json",
+    success: function (result) {
+      let builder = ''
+      result.forEach(element => {
+        const nation = element.nations.filter(e => e.value == element.nationID)
+        builder += `<tr><td>${element.name}</td><td>${element.bornYear}</td><td>${element.company}</td><td>${nation[0].text}</td><td>${element.asset}</td><td><a href="/Home/Update/${element.id}">Edit</a></td><td><form onsubmit="return confirm('Do you really want to remove this billionaire?')" method="post" action="/Home/Delete/${element.id}"><button>Remove</button></form></td></tr>`
+      })
+      $('tbody').html(builder)
+    },
+    error: function (data) {
+      alert('error')
+      console.log(data)
+    }
+});
+}

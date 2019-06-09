@@ -13,10 +13,12 @@ namespace CRUDADO.Controllers
 	public class HomeController : Controller
 	{
 		public IConfiguration Configuration { get; }
+		string connectionString = "";
 
 		public HomeController(IConfiguration configuration)
 		{
 			Configuration = configuration;
+			connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			GetNationList();
 		}
 
@@ -26,7 +28,6 @@ namespace CRUDADO.Controllers
 		{
 			List<Nation> nationList = new List<Nation>();
 
-			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				//SqlDataReader
@@ -60,19 +61,19 @@ namespace CRUDADO.Controllers
 			NationList = nationList;
 		}
 
-		public IActionResult Index()
+		public List<Billionaire> PagingList(int pagenumber, int pagesize) 
 		{
 			List<Billionaire> BillionaireList = new List<Billionaire>();
-
-			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				//SqlDataReader
 				connection.Open();
 
-				string sql = "getall";
+				string sql = "paging";
 				SqlCommand command = new SqlCommand(sql, connection);
 				command.CommandType = CommandType.StoredProcedure;
+				command.Parameters.Add("pagenumber", SqlDbType.Int).Value = pagenumber;
+				command.Parameters.Add("pagesize", SqlDbType.Int).Value = pagesize;
 
 				using (SqlDataReader dataReader = command.ExecuteReader())
 				{
@@ -99,9 +100,20 @@ namespace CRUDADO.Controllers
 
 				connection.Close();
 			}
-			return View(BillionaireList);
+			return BillionaireList;
 		}
 
+		public JsonResult Paging(int page) 
+		{
+			var pageingList = PagingList(page, 10);
+			return Json(pageingList);
+		}
+
+		public IActionResult Index()
+		{
+			return View(PagingList(1, int.MaxValue));
+		}
+		
 		public IActionResult Create()
 		{
 			Billionaire._NationID = -1;
@@ -113,10 +125,9 @@ namespace CRUDADO.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 				using (SqlConnection connection = new SqlConnection(connectionString))
 				{
-					string sql = $"insert into Billionaire(Name, BornYear, Company, NationID, Asset) values (@Name, @BornYear, @Company, @NationID, @Asset)";
+					string sql = $"insertnew";
 
 					using (SqlCommand command = new SqlCommand(sql, connection))
 					{
@@ -140,8 +151,6 @@ namespace CRUDADO.Controllers
 
 		public IActionResult Update(int id)
 		{
-			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
-
 			Billionaire billionaire = new Billionaire();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
@@ -175,7 +184,6 @@ namespace CRUDADO.Controllers
 		[ActionName("Update")]
 		public IActionResult Update_Post(Billionaire billionaire)
 		{
-			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"updatebyid";
@@ -185,7 +193,7 @@ namespace CRUDADO.Controllers
 					command.CommandType = CommandType.StoredProcedure;
 					command.Parameters.Add("Name", SqlDbType.NVarChar).Value = billionaire.Name;
 					command.Parameters.Add("BornYear", SqlDbType.Int).Value = billionaire.BornYear;
-					command.Parameters.Add("Company", SqlDbType.NVarChar).Value = billionaire.Company;
+					command.Parameters.Add("Company", SqlDbType.NVarChar).Value = billionaire.Company ?? "";
 					command.Parameters.Add("NationID", SqlDbType.BigInt).Value = billionaire.NationID;
 					command.Parameters.Add("Asset", SqlDbType.Int).Value = billionaire.Asset;
 					command.Parameters.Add("ID", SqlDbType.Int).Value = billionaire.ID;
@@ -200,7 +208,6 @@ namespace CRUDADO.Controllers
 		[HttpPost]
 		public IActionResult Delete(int id)
 		{
-			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"removebyid";
@@ -227,7 +234,6 @@ namespace CRUDADO.Controllers
 		[HttpPost]
 		public IActionResult DeleteAll()
 		{
-			string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"Delete From Billionaire";
