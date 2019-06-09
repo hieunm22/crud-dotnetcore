@@ -18,11 +18,17 @@ const paging = p => {
     case "currentPage":
       currentPage = +pageElement.value
       break;
+    case "pageSize":
+      const max = +Math.ceil(total / p.value)
+      document.getElementById('totalPage').textContent = `/ ${max}`
+      pageElement.max = max
+      currentPage = (currentPage > max ? max : currentPage)
+      break;
   }
   pageElement.value = currentPage
   $.ajax({
     url: "/Home/Paging",
-    data: { page: pageElement.valueAsNumber },
+    data: { page: pageElement.valueAsNumber, pagesize: document.getElementById('pageSize').value },
     type: "post",
     dataType: "json",
     success: function (result) {

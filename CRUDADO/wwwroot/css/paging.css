@@ -26,7 +26,7 @@ ul, menu, dir {
 	float: left;
 	margin: 0 3px;
 	border: 1px solid #eaeaea;
-	padding: 2px 6px 2px 6px;
+	padding: 5px;
 	font: normal 12px arial;
 	color: #000;
 	cursor: none;
@@ -40,21 +40,29 @@ ul, menu, dir {
 	width: 100px;
 }
 #currentPage {
-	height: 20px;
+	height: 25px;
 	width: 50px;
 	text-align: center;
 	border: 1px solid #eaeaea;
 }
-#allPage {
+#totalPage {
 	height: 20px;
 	text-align: center;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+  -moz-appearance:textfield; /* Firefox */
+}
+#pageSize {
+	float: left;
+	display: inherit;
+	height: calc(2.25rem - 10px);
+	width: 50px;
+	padding: 0.375px 0.2rem;
+	margin-left: 10px;
 }

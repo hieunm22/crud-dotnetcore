@@ -1,13 +1,20 @@
 @model IEnumerable<Billionaire>
 <div class="paginationnew">
     <ul>
-        <li class="inactive" title="First page" onclick="paging(this)" id="firstPage"><<</li>
-        <li class="inactive" title="Previous page" onclick="paging(this)" id="prevPage"><</li>
+        <li title="First page" onclick="paging(this)" id="firstPage"><<</li>
+        <li title="Previous page" onclick="paging(this)" id="prevPage"><</li>
         <span id="currentPageParent">
             <input id="currentPage" type="number" onchange="paging(this)" value="1" min="1" max="@Math.Ceiling(Model.Count() / 10d)"/>
-            <span id="allPage">/ @Math.Ceiling(Model.Count() / 10d)</span>
+            <span id="totalPage">/ @Math.Ceiling(Model.Count() / 10d)</span>
         </span>
-        <li class="inactive" title="Next page" onclick="paging(this)" id="nextPage">></li>
-        <li class="inactive" title="Last page" onclick="paging(this)" id="lastPage">>></li>
+        <li title="Next page" onclick="paging(this)" id="nextPage">></li>
+        <li title="Last page" onclick="paging(this)" id="lastPage">>></li>
+        <select id="pageSize" class="form-control" onchange="paging(this)">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
     </ul>    
 </div>

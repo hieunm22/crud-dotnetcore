@@ -103,9 +103,9 @@ namespace CRUDADO.Controllers
 			return BillionaireList;
 		}
 
-		public JsonResult Paging(int page) 
+		public JsonResult Paging(int page, int pagesize) 
 		{
-			var pageingList = PagingList(page, 10);
+			var pageingList = PagingList(page, pagesize);
 			return Json(pageingList);
 		}
 
