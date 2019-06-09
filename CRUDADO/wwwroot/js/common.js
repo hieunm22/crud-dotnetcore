@@ -34,8 +34,7 @@ const paging = p => {
     success: function (result) {
       let builder = ''
       result.forEach(element => {
-        const nation = element.nations.filter(e => e.value == element.nationID)
-        builder += `<tr><td>${element.name}</td><td>${element.bornYear}</td><td>${element.company}</td><td>${nation[0].text}</td><td>${element.asset}</td><td><a href="/Home/Update/${element.id}">Edit</a></td><td><form onsubmit="return confirm('Do you really want to remove this billionaire?')" method="post" action="/Home/Delete/${element.id}"><button>Remove</button></form></td></tr>`
+        builder += `<tr><td>${element.name}</td><td>${element.bornYear}</td><td>${element.company}</td><td>${element.national.name}</td><td>${element.asset}</td><td><a href="/Home/Update/${element.id}">Edit</a></td><td><form onsubmit="return confirm('Do you really want to remove this billionaire?')" method="post" action="/Home/Delete/${element.id}"><button>Remove</button></form></td></tr>`
       })
       $('tbody').html(builder)
     },

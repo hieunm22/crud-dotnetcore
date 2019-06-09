@@ -52,7 +52,6 @@ namespace CRUDADO.Controllers
 						{
 							continue;
 						}
-
 					}
 				}
 
@@ -88,6 +87,7 @@ namespace CRUDADO.Controllers
 							billionaire.Company = Convert.ToString(dataReader["Company"]);
 							billionaire.NationID = Convert.ToInt64(dataReader["NationID"]);
 							billionaire.Asset = Convert.ToDouble(dataReader["Asset"]);
+							billionaire.National = NationList.FirstOrDefault(f => f.ID == billionaire.NationID);
 						  BillionaireList.Add(billionaire);
 						}
 						catch (Exception)
