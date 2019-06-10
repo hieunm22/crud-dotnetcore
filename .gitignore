@@ -7,8 +7,9 @@
 
 
 # production
-**/obj/
-**/bin/
-**/.vscode/
+**/CRUDADO/obj/
+**/CRUDADO/bin/
+**/CRUDADO/.vscode/
 
 # misc
+**/CRUDADO/appsettings.json

@@ -16,6 +16,8 @@ const paging = p => {
       currentPage = +pageElement.max
       break;
     case "currentPage":
+      if (pageElement.valueAsNumber > pageElement.max) pageElement.value = pageElement.max
+      if (pageElement.valueAsNumber < pageElement.min) pageElement.value = pageElement.min
       currentPage = +pageElement.value
       break;
     case "pageSize":
