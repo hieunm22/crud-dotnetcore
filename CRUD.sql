@@ -72,9 +72,9 @@ as
 begin
 	select top (@pagesize) * from
 	(
-		select * from Billionaire
-		order by ID
-		OFFSET @pagesize * (@pagenumber - 1) ROWS
+		select top (@pagesize * @pagenumber) * from Billionaire
+		except
+		select top (@pagesize * (@pagenumber - 1)) * from Billionaire
 	) paging
 end
 go
